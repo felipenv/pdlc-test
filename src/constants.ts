@@ -7,6 +7,19 @@
 import type { PieceKind } from './types';
 
 // ---------------------------------------------------------------------------
+// Piece set
+// ---------------------------------------------------------------------------
+
+/**
+ * Canonical list of all seven tetromino kinds.
+ *
+ * Used as the source of truth for the 7-bag piece generator
+ * (`src/logic/bag.ts`) and anywhere else that needs to enumerate the
+ * full set of `PieceKind` values at runtime.
+ */
+export const PIECE_KINDS: readonly PieceKind[] = ['I', 'O', 'T', 'S', 'Z', 'J', 'L'] as const;
+
+// ---------------------------------------------------------------------------
 // Board dimensions
 // ---------------------------------------------------------------------------
 
