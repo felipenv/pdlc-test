@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tetris</title>
+  </head>
+  <body>
+    <main id="app">
+      <section id="playfield-container">
+        <canvas id="playfield" width="300" height="600"></canvas>
+      </section>
+      <aside id="sidebar">
+        <section id="next-container">
+          <h2>Next</h2>
+          <canvas id="next" width="120" height="120"></canvas>
+        </section>
+        <section id="hud">
+          <div class="hud-row">
+            <label for="score">Score</label>
+            <span id="score">0</span>
+          </div>
+          <div class="hud-row">
+            <label for="lines">Lines</label>
+            <span id="lines">0</span>
+          </div>
+          <div class="hud-row">
+            <label for="level">Level</label>
+            <span id="level">1</span>
+          </div>
+        </section>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
