@@ -233,10 +233,75 @@ export const TETROMINOES: Record<PieceKind, number[][][]> = {
 };
 
 // ---------------------------------------------------------------------------
-// Colors
+// Colors — monochrome LCD palette
 // ---------------------------------------------------------------------------
+//
+// The renderer draws every locked cell and the active piece in a single
+// near-black `ink` and every empty cell as a dim `ghost` outline on the
+// LCD-style `screen` background, evoking a classic handheld Tetris look.
+// All literals live here so `src/render.ts` (and any future module) can
+// import them by name — no magic colors should be duplicated downstream.
 
-/** Canonical color for each tetromino (cyan/yellow/purple/green/red/blue/orange). */
+/**
+ * Canonical monochrome LCD palette.
+ *
+ * - `ink`         — near-black hex used for both locked cells and the
+ *                   active piece (the "on" brick glyph).
+ * - `ghost`       — faint dim color used for the "off" brick outline
+ *                   drawn on every empty cell.
+ * - `screen`      — greenish-grey LCD background fill for both the
+ *                   playfield canvas and the next-piece preview canvas.
+ * - `overlayTint` — darkened LCD-green semi-transparent fill painted
+ *                   over the playfield for the PAUSED / GAME OVER
+ *                   overlays.
+ */
+export const LCD_PALETTE = {
+  ink: '#1a1a1a',
+  ghost: 'rgba(26, 26, 26, 0.18)',
+  screen: '#9ca989',
+  overlayTint: 'rgba(40, 56, 40, 0.55)',
+} as const;
+
+// ---------------------------------------------------------------------------
+// Brick-glyph geometry
+// ---------------------------------------------------------------------------
+//
+// Each cell is rendered as two concentric shapes — an outer rounded
+// rectangle that traces the brick's silhouette and an inner filled
+// rectangle that gives it the chunky LCD pixel look. Both "on" and "off"
+// cells use the same geometry so the only difference between a locked /
+// active brick and an empty slot is the fill / stroke colour pulled from
+// {@link LCD_PALETTE}.
+
+/**
+ * Padding (in pixels) between the cell edge and the outer rounded
+ * rectangle. Controls how much of the cell is whitespace around the
+ * brick silhouette.
+ */
+export const BRICK_OUTER_PADDING = 2;
+
+/**
+ * Padding (in pixels) between the outer rounded rectangle and the inner
+ * filled rectangle. Controls the thickness of the visible brick "ring".
+ */
+export const BRICK_INNER_PADDING = 4;
+
+/**
+ * Corner radius (in pixels) for the outer rounded rectangle. Gives the
+ * brick its softened LCD-pixel silhouette.
+ */
+export const BRICK_CORNER_RADIUS = 3;
+
+/**
+ * Canonical color for each tetromino (cyan/yellow/purple/green/red/blue/orange).
+ *
+ * @deprecated The monochrome LCD redesign no longer uses per-kind cell
+ * colors — locked cells and the active piece are both rendered in
+ * {@link LCD_PALETTE.ink}, and empty cells use {@link LCD_PALETTE.ghost}.
+ * This export is retained temporarily so existing consumers in
+ * `src/render.ts` continue to compile until they are rewired to the
+ * new palette in a follow-up story; do not introduce new references.
+ */
 export const COLORS: Record<PieceKind, string> = {
   I: '#00ffff',
   O: '#ffff00',
