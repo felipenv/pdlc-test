@@ -4,23 +4,43 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tetris</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <main id="app">
-      <section id="playfield-wrap">
-        <canvas id="playfield" width="240" height="480"></canvas>
-      </section>
-      <aside id="sidebar">
-        <section id="next-wrap">
-          <h2>Next</h2>
-          <canvas id="next" width="96" height="96"></canvas>
-        </section>
-        <section id="hud">
-          <div class="hud-row"><label for="score">Score</label><span id="score">0</span></div>
-          <div class="hud-row"><label for="lines">Lines</label><span id="lines">0</span></div>
-          <div class="hud-row"><label for="level">Level</label><span id="level">1</span></div>
-        </section>
-      </aside>
+      <div class="device">
+        <div class="lcd">
+          <section id="playfield-wrap">
+            <canvas id="playfield" width="240" height="480"></canvas>
+          </section>
+          <aside class="hud">
+            <section class="hud-next">
+              <h2 class="hud-label">Next</h2>
+              <canvas id="next" width="96" height="96"></canvas>
+            </section>
+            <section class="hud-stats">
+              <div class="hud-row">
+                <span class="hud-label">Score</span>
+                <span class="hud-value" id="score">0</span>
+              </div>
+              <div class="hud-row">
+                <span class="hud-label">Lines</span>
+                <span class="hud-value" id="lines">0</span>
+              </div>
+              <div class="hud-row">
+                <span class="hud-label">Level</span>
+                <span class="hud-value" id="level">1</span>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
     </main>
     <script type="module" src="/src/main.ts"></script>
   </body>
