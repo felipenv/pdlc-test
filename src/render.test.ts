@@ -573,6 +573,8 @@ describe('createRenderer', () => {
 
     createRenderer({ playfield }).draw(makeState({ status: 'gameover' }));
 
+    // Overlay dim is the darkened LCD-green semi-transparent tint, not
+    // a generic black wash — matches `LCD_PALETTE.overlayTint`.
     const overlayFill = calls.find(
       (c) =>
         c.type === 'fillRect' &&
@@ -580,8 +582,7 @@ describe('createRenderer', () => {
         c.y === 0 &&
         c.w === 240 &&
         c.h === 480 &&
-        typeof c.fillStyle === 'string' &&
-        c.fillStyle.startsWith('rgba(0, 0, 0'),
+        c.fillStyle === LCD_PALETTE.overlayTint,
     );
     expect(overlayFill).toBeDefined();
 
@@ -589,6 +590,9 @@ describe('createRenderer', () => {
     expect(label).toBeDefined();
     expect(label?.x).toBe(120);
     expect(label?.y).toBe(240);
+    // Label is painted in LCD ink using the pixel HUD font family.
+    expect(label?.fillStyle).toBe(LCD_PALETTE.ink);
+    expect(label?.font).toContain('Press Start 2P');
   });
 
   it('sets gameoverEl text instead of overlay when supplied', () => {
@@ -625,6 +629,8 @@ describe('createRenderer', () => {
 
     createRenderer({ playfield }).draw(makeState({ status: 'paused' }));
 
+    // Overlay dim is the darkened LCD-green semi-transparent tint, not
+    // a generic black wash — matches `LCD_PALETTE.overlayTint`.
     const overlayFill = calls.find(
       (c) =>
         c.type === 'fillRect' &&
@@ -632,13 +638,17 @@ describe('createRenderer', () => {
         c.y === 0 &&
         c.w === 240 &&
         c.h === 480 &&
-        typeof c.fillStyle === 'string' &&
-        c.fillStyle.startsWith('rgba(0, 0, 0'),
+        c.fillStyle === LCD_PALETTE.overlayTint,
     );
     expect(overlayFill).toBeDefined();
 
     const label = calls.find((c) => c.type === 'fillText' && c.text === 'PAUSED');
     expect(label).toBeDefined();
+    expect(label?.x).toBe(120);
+    expect(label?.y).toBe(240);
+    // Label is painted in LCD ink using the pixel HUD font family.
+    expect(label?.fillStyle).toBe(LCD_PALETTE.ink);
+    expect(label?.font).toContain('Press Start 2P');
   });
 
   it('does not draw status overlays while playing', () => {

@@ -32,6 +32,13 @@
 //                    on the playfield.
 //       'playing'  → any previously-shown `gameoverEl` is cleared.
 //
+//     Canvas overlays (PAUSED / GAME OVER) use `LCD_PALETTE.overlayTint`
+//     for the darkened LCD-green dim layer and `LCD_PALETTE.ink` for the
+//     label fill, rendered in the pixel HUD font family
+//     ("Press Start 2P", mirroring the `--hud-font` CSS variable). The
+//     DOM HUD spans (score / lines / level) are styled via `styles.css`;
+//     no canvas text is drawn for the HUD by this module.
+//
 // The module does not import the DOM globals at the top level — all
 // drawing happens inside `draw()` so the test suite can hand in mock
 // canvas / context objects.
@@ -342,34 +349,57 @@ function drawHud(
   if (levelEl) levelEl.textContent = String(state.level);
 }
 
-/** Paint a translucent overlay with a "GAME OVER" label. */
+/**
+ * Pixel/segmented font family used for on-canvas overlay labels.
+ *
+ * Mirrors the `--hud-font` CSS variable declared in `styles.css` so the
+ * canvas text renders in the same "Press Start 2P" pixel typeface as the
+ * DOM HUD spans. Canvas `ctx.font` cannot resolve CSS variables, so the
+ * family list is inlined here verbatim.
+ */
+const OVERLAY_FONT_FAMILY = '"Press Start 2P", ui-monospace, "Courier New", monospace';
+
+/**
+ * Paint a translucent overlay with a "GAME OVER" label.
+ *
+ * The dim layer uses {@link LCD_PALETTE.overlayTint} (darkened LCD-green
+ * semi-transparent fill) and the label is rendered in
+ * {@link LCD_PALETTE.ink} using the pixel HUD font, so the overlay reads
+ * as ink-on-LCD and matches the brick glyphs underneath.
+ */
 function drawGameOverOverlay(
   ctx: CanvasRenderingContext2D,
   canvasW: number,
   canvasH: number,
 ): void {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.65)';
+  ctx.fillStyle = LCD_PALETTE.overlayTint;
   ctx.fillRect(0, 0, canvasW, canvasH);
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = LCD_PALETTE.ink;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 32px sans-serif';
+  ctx.font = `20px ${OVERLAY_FONT_FAMILY}`;
   ctx.fillText('GAME OVER', canvasW / 2, canvasH / 2);
 }
 
-/** Paint a translucent overlay with a "PAUSED" label. */
+/**
+ * Paint a translucent overlay with a "PAUSED" label.
+ *
+ * Uses the same LCD-toned dim and pixel-font ink styling as
+ * {@link drawGameOverOverlay} so both status overlays read consistently
+ * against the brick playfield.
+ */
 function drawPausedOverlay(
   ctx: CanvasRenderingContext2D,
   canvasW: number,
   canvasH: number,
 ): void {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.45)';
+  ctx.fillStyle = LCD_PALETTE.overlayTint;
   ctx.fillRect(0, 0, canvasW, canvasH);
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = LCD_PALETTE.ink;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = 'bold 32px sans-serif';
+  ctx.font = `24px ${OVERLAY_FONT_FAMILY}`;
   ctx.fillText('PAUSED', canvasW / 2, canvasH / 2);
 }
