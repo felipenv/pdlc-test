@@ -1,0 +1,283 @@
+/* =============================================================================
+ * Retro brick-game theme
+ *
+ * Centrally defined visual theme for the Tetris handheld console:
+ *   - Warm mustard plastic shell framing the device.
+ *   - Recessed greenish-grey LCD inset matching the canvas backdrop.
+ *   - Pixel/segmented HUD typography (Press Start 2P with monospace fallback).
+ *   - Responsive scaling: device stays centered and shrinks gracefully on
+ *     narrow viewports while preserving the 240x480 playfield aspect and
+ *     96x96 next-piece aspect (canvases are never deformed).
+ *
+ * All theme colors and typography flow from the `:root` custom properties
+ * below — no theme color is hardcoded outside that block, so the retro
+ * palette can be retuned in one place.
+ * ===========================================================================*/
+
+:root {
+  /* ---- Plastic shell (handheld chrome) -------------------------------- */
+  --shell-bg: #d8a542;            /* warm mustard / beige plastic         */
+  --shell-bg-soft: #c89236;       /* slightly darker tone for inner frame */
+  --shell-border: #7a5a1a;        /* deep amber edge                      */
+  --shell-shadow: rgba(0, 0, 0, 0.35);
+  --shell-highlight: rgba(255, 245, 200, 0.55);
+  --shell-inner-shadow: rgba(0, 0, 0, 0.12);
+
+  /* ---- LCD (recessed greenish-grey screen) ---------------------------- */
+  --lcd-bg: #9aab8a;              /* greenish-grey LCD background         */
+  --lcd-bg-edge: #7c8c6c;         /* darker tone used inside inset shadow */
+  --lcd-ink: #1c2410;             /* dark LCD pixel / text ink            */
+  --lcd-ghost: rgba(28, 36, 16, 0.35); /* dim/ghost ink for off pixels    */
+  --lcd-inset-shadow: rgba(0, 0, 0, 0.55);
+  --lcd-inset-highlight: rgba(255, 255, 255, 0.12);
+
+  /* ---- Typography ----------------------------------------------------- */
+  --hud-font: "Press Start 2P", ui-monospace, "Courier New", monospace;
+
+  /* ---- Geometry / spacing -------------------------------------------- */
+  --device-radius: 24px;
+  --lcd-radius: 10px;
+  --device-pad: 28px;
+  --lcd-pad: 16px;
+  --hud-gap: 14px;
+
+  /* Natural width of the device chrome (playfield 240 + hud + paddings). */
+  --device-width: 440px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Page reset + plastic-shell background
+ * -------------------------------------------------------------------------*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--shell-bg);
+  color: var(--lcd-ink);
+  font-family: var(--hud-font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+main#app {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--device-pad);
+}
+
+/* ---------------------------------------------------------------------------
+ * .device — molded plastic shell
+ *
+ * Layered shadows give the impression of injection-molded plastic: an outer
+ * drop shadow, a subtle top highlight, and an inner darker rim around the
+ * LCD inset.
+ * -------------------------------------------------------------------------*/
+
+.device {
+  width: var(--device-width);
+  max-width: 100%;
+  padding: var(--device-pad);
+  background: var(--shell-bg);
+  border: 2px solid var(--shell-border);
+  border-radius: var(--device-radius);
+  box-shadow:
+    0 18px 36px -12px var(--shell-shadow),
+    0 2px 0 0 var(--shell-highlight) inset,
+    0 -4px 12px 0 var(--shell-inner-shadow) inset;
+}
+
+/* ---------------------------------------------------------------------------
+ * .lcd — recessed greenish-grey screen
+ *
+ * The recessed look comes from inner shadows on the top/left (darker rim)
+ * which sit on top of the LCD background. Children (playfield + HUD) are
+ * laid out as a flex row.
+ * -------------------------------------------------------------------------*/
+
+.lcd {
+  display: flex;
+  flex-direction: row;
+  gap: var(--hud-gap);
+  padding: var(--lcd-pad);
+  background: var(--lcd-bg);
+  border-radius: var(--lcd-radius);
+  border: 1px solid var(--lcd-bg-edge);
+  box-shadow:
+    inset 0 3px 6px 0 var(--lcd-inset-shadow),
+    inset 0 -1px 0 0 var(--lcd-inset-highlight),
+    0 0 0 2px var(--shell-bg-soft);
+  align-items: stretch;
+}
+
+/* ---------------------------------------------------------------------------
+ * Playfield
+ *
+ * The canvas has intrinsic 240x480 dimensions from the HTML attributes.
+ * We keep its aspect ratio with `height: auto` and let `max-width: 100%`
+ * shrink it on narrow viewports without distortion.
+ * -------------------------------------------------------------------------*/
+
+#playfield-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+canvas#playfield {
+  display: block;
+  width: 240px;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 240 / 480;
+  background: var(--lcd-bg);
+  border: 1px solid var(--lcd-bg-edge);
+  border-radius: 4px;
+  image-rendering: pixelated;
+}
+
+/* ---------------------------------------------------------------------------
+ * HUD sidebar — column of next-piece preview + numeric readouts
+ * -------------------------------------------------------------------------*/
+
+.hud {
+  display: flex;
+  flex-direction: column;
+  gap: var(--hud-gap);
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: var(--hud-font);
+  color: var(--lcd-ink);
+}
+
+.hud-next {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+canvas#next {
+  display: block;
+  width: 96px;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  background: var(--lcd-bg);
+  border: 1px solid var(--lcd-bg-edge);
+  border-radius: 4px;
+  image-rendering: pixelated;
+  align-self: center;
+}
+
+/* ---------------------------------------------------------------------------
+ * HUD typography — labels + numeric readouts
+ *
+ * Both labels and values use the pixel font. Numeric values are
+ * right-aligned via `margin-left: auto` so labels stay on the left and
+ * digits line up on the right edge of each row. Sizes are kept small but
+ * comfortably readable; contrast between `--lcd-ink` (#1c2410) and
+ * `--lcd-bg` (#9aab8a) exceeds the 4.5:1 WCAG AA threshold for the
+ * accessibility note.
+ * -------------------------------------------------------------------------*/
+
+.hud-label {
+  margin: 0;
+  font-family: var(--hud-font);
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+  color: var(--lcd-ink);
+  text-transform: uppercase;
+}
+
+.hud-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hud-row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.hud-row .hud-label {
+  flex: 0 0 auto;
+}
+
+.hud-value {
+  margin-left: auto;
+  font-family: var(--hud-font);
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--lcd-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  min-width: 4ch;
+}
+
+/* ---------------------------------------------------------------------------
+ * Responsive scaling
+ *
+ * Below the device's natural width we shrink padding and let the canvases
+ * fluidly scale via `max-width: 100%`. The chrome framing (rounded shell,
+ * recessed LCD inset) is preserved because we shrink padding/radius
+ * proportionally instead of letting content escape.
+ * -------------------------------------------------------------------------*/
+
+@media (max-width: 480px) {
+  :root {
+    --device-pad: 16px;
+    --lcd-pad: 10px;
+    --hud-gap: 10px;
+    --device-radius: 18px;
+  }
+
+  main#app {
+    padding: 12px;
+  }
+
+  .device {
+    width: 100%;
+  }
+
+  /* On very narrow screens we let the canvas shrink with the container. */
+  canvas#playfield {
+    width: 100%;
+  }
+
+  .hud-label {
+    font-size: 9px;
+  }
+
+  .hud-value {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Stack HUD beneath the playfield when there's truly no horizontal room.
+     Chrome framing is preserved — we just flip the inner LCD layout. */
+  .lcd {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hud {
+    width: 100%;
+  }
+}
