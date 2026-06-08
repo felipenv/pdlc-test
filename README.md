@@ -1,60 +1,47 @@
-# pdlc-test
+# HP 50G Calculator
 
-A browser-based Tetris game built with [Vite](https://vitejs.dev/) and TypeScript. Play classic Tetris in your browser with keyboard controls, soft/hard drop, rotation, pause, and restart.
+A static, dependency-free single-page web app that emulates the HP 50G
+calculator. The MVP scaffold is plain HTML, CSS, and ES modules — no backend,
+no build step, no external CDN resources. Everything needed to run the app is
+self-contained inside this repository.
 
-## Prerequisites
+## Run it locally
 
-- **Node.js** 18 or newer (20+ recommended) — required by Vite 5.
-- **npm** (bundled with Node.js).
+No installation and no server are required for the scaffold.
 
-## Install
+1. Clone or download this repository.
+2. Open `index.html` in a desktop browser (Chrome, Firefox, Safari, or Edge).
 
-Install dependencies from the repo root:
+You can do this in any of the following ways:
 
-```bash
-npm install
+- Double-click `index.html` in your file manager.
+- Drag `index.html` onto an open browser window.
+- From a terminal:
+  - macOS: `open index.html`
+  - Linux: `xdg-open index.html`
+  - Windows: `start index.html`
+
+The page should load without console errors and display the calculator
+placeholder. Future stories will add the faceplate, keypad, display, and
+evaluation engine.
+
+## Repository layout
+
+```
+index.html          # Page shell — loads styles/main.css and src/main.js
+src/
+  main.js           # Entry script — mounts the calculator into #calculator-root
+  engine/           # (reserved) state + expression evaluation
+  ui/               # (reserved) display and keypad components
+  input/            # (reserved) keyboard / pointer event dispatcher
+  constants/        # (reserved) key definitions and function table
+styles/
+  main.css          # Top-level stylesheet (faceplate, keypad, display, LCD font)
+assets/             # (reserved) self-contained fonts and icons
 ```
 
-## Development
+## Non-goals for the scaffold
 
-Start the Vite dev server (with hot module reload):
-
-```bash
-npm run dev
-```
-
-The dev server prints a local URL (typically `http://localhost:5173`) — open it in your browser to play.
-
-## Production build
-
-Create an optimized production build:
-
-```bash
-npm run build
-```
-
-Preview the built output locally:
-
-```bash
-npm run preview
-```
-
-## Tests
-
-Run the [Vitest](https://vitest.dev/) test suite once:
-
-```bash
-npm test
-```
-
-## Controls
-
-| Key            | Action                  |
-| -------------- | ----------------------- |
-| ← / →          | Move piece left / right |
-| ↓              | Soft drop               |
-| Space          | Hard drop               |
-| ↑ or X         | Rotate clockwise        |
-| Z              | Rotate counter-clockwise |
-| P              | Pause / resume          |
-| R              | Restart the game        |
+- No backend service.
+- No build tooling required to open the app.
+- No external network requests (CDNs, web fonts, analytics, etc.).

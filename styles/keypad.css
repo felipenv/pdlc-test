@@ -1,0 +1,202 @@
+/*
+ * HP 50G Calculator — keypad and faceplate styles.
+ *
+ * Renders the keypad emitted by `src/ui/keypad.js`. Geometry mirrors the
+ * HP 50G arrangement: a 6-column function row, a 6-column system row, a
+ * 5-column cursor row with ENTER spanning two cells, and 5/6-column lower
+ * rows. The display sits above the keypad inside the faceplate casing.
+ *
+ * Colours: primary labels white, left-shift orange/red, right-shift
+ * cyan/blue, alpha light/cream — all driven from class names emitted by
+ * `renderKeypad`, never inline.
+ */
+
+/* ----------------------------------------------------------------------- */
+/* Faceplate — dark casing housing the display and the keypad.             */
+/* ----------------------------------------------------------------------- */
+.faceplate {
+  --casing-color: #1c1f24;
+  --casing-edge: #0c0e10;
+  --key-color: #2c2f36;
+  --key-edge: #14171b;
+  --key-color-hover: #383c44;
+  --key-color-active: #1f2228;
+  --primary-color: #f4f4f4;
+  --lshift-color: #ff8a3d;
+  --rshift-color: #5fbfff;
+  --alpha-color: #e6e3d2;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  max-width: 560px;
+  margin: 24px auto;
+  padding: 22px 18px 26px;
+
+  background: linear-gradient(180deg, #2a2e35 0%, var(--casing-color) 100%);
+  border: 1px solid var(--casing-edge);
+  border-radius: 18px;
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  color: var(--primary-color);
+}
+
+.display {
+  min-height: 96px;
+  border-radius: 6px;
+  background: #b6c08a;
+  border: 1px solid #0b0d10;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+/* ----------------------------------------------------------------------- */
+/* Keypad container & rows                                                 */
+/* ----------------------------------------------------------------------- */
+.keypad {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.keypad-row {
+  display: grid;
+  gap: 6px;
+  /* Default — overridden per row index below. */
+  grid-template-columns: repeat(6, 1fr);
+}
+
+/* Row 0: function row F1..F6 (6 keys) */
+.keypad-row[data-row-index="0"] { grid-template-columns: repeat(6, 1fr); }
+/* Row 1: APPS, MODE, TOOL, VAR, STO, NXT (6 keys) */
+.keypad-row[data-row-index="1"] { grid-template-columns: repeat(6, 1fr); }
+/* Row 2: HIST, EVAL, ', SYMB, ▲ (5 keys) */
+.keypad-row[data-row-index="2"] { grid-template-columns: repeat(5, 1fr); }
+/* Row 3: ◀, ENTER (span 2), ▶, ▼ → totals 5 cells */
+.keypad-row[data-row-index="3"] { grid-template-columns: repeat(5, 1fr); }
+/* Row 4: LSHIFT, RSHIFT, ALPHA, +/-, EEX, DEL (6 keys) */
+.keypad-row[data-row-index="4"] { grid-template-columns: repeat(6, 1fr); }
+/* Row 5: SIN, COS, TAN, √x, yˣ, 1/x (6 keys) */
+.keypad-row[data-row-index="5"] { grid-template-columns: repeat(6, 1fr); }
+/* Rows 6-9: alphanumeric block — 5 keys each */
+.keypad-row[data-row-index="6"] { grid-template-columns: repeat(5, 1fr); }
+.keypad-row[data-row-index="7"] { grid-template-columns: repeat(5, 1fr); }
+.keypad-row[data-row-index="8"] { grid-template-columns: repeat(5, 1fr); }
+.keypad-row[data-row-index="9"] { grid-template-columns: repeat(5, 1fr); }
+
+/* ----------------------------------------------------------------------- */
+/* Key cap                                                                 */
+/*                                                                         */
+/* Each key is a small grid laying out its four labels:                    */
+/*                                                                         */
+/*   ┌────────────┬────────────┐                                            */
+/*   │  lshift    │  rshift    │  ← secondary labels above primary         */
+/*   ├────────────┴────────────┤                                            */
+/*   │         primary         │                                            */
+/*   ├────────────┬────────────┤                                            */
+/*   │            │  alpha     │  ← alpha label bottom-right               */
+/*   └────────────┴────────────┘                                            */
+/* ----------------------------------------------------------------------- */
+.key {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "lshift rshift"
+    "primary primary"
+    "alpha alpha";
+  row-gap: 2px;
+  column-gap: 4px;
+
+  min-height: 60px;
+  padding: 4px 6px 5px;
+
+  background: linear-gradient(180deg, #353941 0%, var(--key-color) 100%);
+  color: var(--primary-color);
+  border: 1px solid var(--key-edge);
+  border-radius: 6px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 1px 2px rgba(0, 0, 0, 0.35);
+
+  cursor: pointer;
+  font: inherit;
+  text-align: center;
+
+  transition: background 80ms ease, transform 60ms ease;
+}
+
+.key:hover {
+  background: linear-gradient(180deg, #40454e 0%, var(--key-color-hover) 100%);
+}
+
+.key:active {
+  background: var(--key-color-active);
+  transform: translateY(1px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.45);
+}
+
+.key:focus-visible {
+  outline: 2px solid #6fb9ff;
+  outline-offset: 1px;
+}
+
+/* ----------------------------------------------------------------------- */
+/* Labels                                                                  */
+/* ----------------------------------------------------------------------- */
+.label-lshift,
+.label-rshift,
+.label-primary,
+.label-alpha {
+  display: block;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.label-lshift {
+  grid-area: lshift;
+  font-size: 9px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--lshift-color);
+  min-height: 10px;
+}
+
+.label-rshift {
+  grid-area: rshift;
+  font-size: 9px;
+  font-weight: 600;
+  text-align: right;
+  color: var(--rshift-color);
+  min-height: 10px;
+}
+
+.label-primary {
+  grid-area: primary;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary-color);
+  align-self: center;
+  min-height: 16px;
+}
+
+.label-alpha {
+  grid-area: alpha;
+  font-size: 9px;
+  font-weight: 500;
+  text-align: right;
+  color: var(--alpha-color);
+  min-height: 10px;
+}
+
+/* Reserve vertical space for empty labels so rows align across the keypad. */
+.label-lshift:empty::before,
+.label-rshift:empty::before,
+.label-alpha:empty::before,
+.label-primary:empty::before {
+  content: "\00a0";
+}

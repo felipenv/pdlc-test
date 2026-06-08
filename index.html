@@ -1,27 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tetris</title>
+    <title>HP 50G Calculator</title>
+    <link rel="stylesheet" href="styles/main.css" />
+    <link rel="stylesheet" href="styles/keypad.css" />
   </head>
   <body>
-    <main id="app">
-      <section id="playfield-wrap">
-        <canvas id="playfield" width="240" height="480"></canvas>
-      </section>
-      <aside id="sidebar">
-        <section id="next-wrap">
-          <h2>Next</h2>
-          <canvas id="next" width="96" height="96"></canvas>
-        </section>
-        <section id="hud">
-          <div class="hud-row"><label for="score">Score</label><span id="score">0</span></div>
-          <div class="hud-row"><label for="lines">Lines</label><span id="lines">0</span></div>
-          <div class="hud-row"><label for="level">Level</label><span id="level">1</span></div>
-        </section>
-      </aside>
-    </main>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="calculator-root"></div>
+    <script type="module" src="src/main.js"></script>
   </body>
 </html>
