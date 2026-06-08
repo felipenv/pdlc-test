@@ -1,16 +1,36 @@
-// HP 50G Calculator — scaffold entry point.
+// HP 50G Calculator — entry point.
 //
-// This file intentionally has no imports yet. Subsequent stories will import
-// the engine, UI, input, and constants modules from src/engine/, src/ui/,
-// src/input/, and src/constants/. For now it just mounts a placeholder node
-// inside the #calculator-root container declared in index.html so the page
-// loads cleanly when opened directly in a desktop browser via file://.
+// Builds the faceplate DOM (dark casing housing the display and the keypad),
+// then renders the keypad from the declarative `KEYPAD_ROWS` layout.
+//
+// The `onKey` callback is a no-op stub for this story. A later story (the
+// input/command dispatcher) will wire it to actual command handling.
+
+import { KEYPAD_ROWS } from "./constants/keys.js";
+import { renderKeypad } from "./ui/keypad.js";
 
 const root = document.getElementById("calculator-root");
 
 if (root) {
-  const placeholder = document.createElement("div");
-  placeholder.className = "calculator-placeholder";
-  placeholder.textContent = "HP 50G Calculator — scaffold ready.";
-  root.appendChild(placeholder);
+  root.replaceChildren();
+
+  const faceplate = document.createElement("div");
+  faceplate.className = "faceplate";
+
+  const display = document.createElement("div");
+  display.className = "display";
+  faceplate.appendChild(display);
+
+  const keypad = document.createElement("div");
+  keypad.className = "keypad";
+  faceplate.appendChild(keypad);
+
+  root.appendChild(faceplate);
+
+  // The dispatcher story replaces this no-op with real command handling.
+  const onKey = (_descriptor) => {
+    /* no-op until the dispatcher story wires this up */
+  };
+
+  renderKeypad(keypad, KEYPAD_ROWS, onKey);
 }
