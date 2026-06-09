@@ -1,0 +1,141 @@
+/*
+ * HP 50G LCD-style display.
+ *
+ * Renders the calculator's read-only display area as a monochrome LCD
+ * with a muted greenish-gray backplate, dark text, a subtle inset
+ * bezel, and an OS-safe fixed-width font stack. No external fonts,
+ * no CDN resources — everything resolves to fonts shipped with the
+ * operating system or a generic monospace fallback.
+ *
+ * Component DOM (built by `src/ui/display.js`):
+ *
+ *   .lcd
+ *     .lcd-annunciators          (status row at the top)
+ *       .lcd-annunciator * N
+ *     .lcd-stack                 (RPN stack — four rows, 4: → 1:)
+ *       .lcd-stack-row
+ *         .lcd-stack-label       (`4:` `3:` `2:` `1:`)
+ *         .lcd-stack-value       (right-aligned)
+ *     .lcd-entry                 (current entry / result / error)
+ *       .lcd-error               (modifier class, dark-red text)
+ */
+
+.lcd {
+  /* OS-safe fixed-width stack. No web font, no CDN. */
+  font-family:
+    "Menlo",
+    "Consolas",
+    "DejaVu Sans Mono",
+    "Liberation Mono",
+    "Courier New",
+    monospace;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #1a2a1a;
+
+  /* Muted greenish-gray LCD backplate. */
+  background-color: #9bbf9b;
+  background-image: linear-gradient(
+    to bottom,
+    #a8c9a8 0%,
+    #9bbf9b 50%,
+    #8eb38e 100%
+  );
+
+  /* Subtle inset bezel — darker inner ring, lighter outer highlight. */
+  border: 1px solid #5c7a5c;
+  border-radius: 6px;
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.35),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.25),
+    0 1px 0 rgba(255, 255, 255, 0.4);
+
+  padding: 10px 14px 12px 14px;
+  min-width: 320px;
+  max-width: 480px;
+  margin: 16px auto;
+
+  /* The display is read-only; explicitly say so so the cursor never
+     turns into a text I-beam on accidental hover. */
+  user-select: none;
+  cursor: default;
+}
+
+/* ---------- Annunciators (top status row) ---------- */
+
+.lcd-annunciators {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 10px;
+
+  min-height: 1.2em;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(26, 42, 26, 0.25);
+
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lcd-annunciator {
+  display: inline-block;
+}
+
+/* ---------- Stack panel ---------- */
+
+.lcd-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 6px;
+}
+
+.lcd-stack-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+
+  font-size: 16px;
+  /* Slight horizontal padding so the row text doesn't sit on the bezel. */
+  padding: 0 2px;
+}
+
+.lcd-stack-label {
+  /* Fixed width so labels stack vertically aligned regardless of value. */
+  width: 2.25em;
+  flex: 0 0 auto;
+  text-align: left;
+  opacity: 0.85;
+}
+
+.lcd-stack-value {
+  flex: 1 1 auto;
+  text-align: right;
+  /* Allow long numbers to truncate gracefully without breaking layout. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Entry / command line ---------- */
+
+.lcd-entry {
+  margin-top: 6px;
+  padding: 4px 2px 0 2px;
+  border-top: 1px solid rgba(26, 42, 26, 0.25);
+
+  font-size: 20px;
+  text-align: right;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lcd-entry.lcd-error {
+  /* Errors stay legible on the green backplate — use a dark, desaturated
+     red rather than a screaming RGB red. */
+  color: #8a1f1f;
+  font-style: italic;
+}
