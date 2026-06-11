@@ -2,17 +2,16 @@
   "name": "pdlc-test",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "vitest run"
-  },
-  "devDependencies": {
-    "@types/node": "^20.11.30",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.10",
-    "vitest": "^1.5.0"
+    "dev:frontend": "npm run dev --workspace=@pdlc-test/frontend",
+    "dev:backend": "npm run dev --workspace=@pdlc-test/backend",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "test:frontend": "npm run test --workspace=@pdlc-test/frontend",
+    "test:backend": "npm run test --workspace=@pdlc-test/backend"
   }
 }
