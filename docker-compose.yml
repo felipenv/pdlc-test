@@ -1,0 +1,38 @@
+# Default: `docker compose up` builds and serves the production bundle on :8080.
+# Dev:     `docker compose --profile dev up` starts the Vite dev server on :5173
+#          with the working tree mounted for hot module reload.
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: prod
+    image: pdlc-test-frontend:prod
+    container_name: pdlc-test-frontend
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  frontend-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    image: pdlc-test-frontend:dev
+    container_name: pdlc-test-frontend-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: ["pnpm", "run", "dev", "--", "--host", "0.0.0.0"]

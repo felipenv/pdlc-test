@@ -47,6 +47,59 @@ Run the [Vitest](https://vitest.dev/) test suite once:
 npm test
 ```
 
+## Docker
+
+Docker support gives every contributor a consistent environment for development,
+testing, and production. The `Dockerfile` is multi-stage; `docker-compose.yml`
+wraps the common workflows.
+
+### Production image (default)
+
+Build and run the production bundle (static files served by nginx on port 8080
+with a `/health` endpoint):
+
+```bash
+docker compose up --build
+# then open http://localhost:8080
+```
+
+Or with plain Docker:
+
+```bash
+docker build --target prod -t pdlc-test-frontend:prod .
+docker run --rm -p 8080:8080 pdlc-test-frontend:prod
+curl http://localhost:8080/health   # -> ok
+```
+
+### Development with hot reload
+
+The `dev` profile runs the Vite dev server inside the container with the
+working tree mounted, so edits trigger HMR:
+
+```bash
+docker compose --profile dev up --build
+# then open http://localhost:5173
+```
+
+### Running tests in Docker
+
+The `test` stage executes the Vitest suite at build time and fails the build if
+any test fails:
+
+```bash
+docker build --target test -t pdlc-test-frontend:test .
+```
+
+### Producing the static bundle in Docker
+
+The `build` stage produces `/app/dist` inside the image. To extract it to the
+host, build the stage and copy from a temporary container:
+
+```bash
+docker build --target build -t pdlc-test-frontend:build .
+id=$(docker create pdlc-test-frontend:build) && docker cp "$id":/app/dist ./dist && docker rm "$id"
+```
+
 ## Controls
 
 | Key            | Action                  |

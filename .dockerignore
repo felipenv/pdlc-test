@@ -1,0 +1,45 @@
+# Dependencies (installed inside the image)
+node_modules
+**/node_modules
+
+# Build output
+dist
+**/dist
+
+# Caches
+.vite
+.vite-cache
+.vitest-cache
+coverage
+
+# VCS / CI
+.git
+.gitignore
+.github
+
+# Docker files themselves don't belong in the build context payload
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Editor / OS
+.DS_Store
+.idea
+.vscode
+*.swp
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Docs (not needed at runtime; kept small to speed up build context)
+README.md
