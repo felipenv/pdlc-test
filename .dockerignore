@@ -1,0 +1,13 @@
+**/node_modules
+**/dist
+**/.vite
+**/.vite-cache
+**/.vitest-cache
+**/coverage
+.git
+.gitignore
+.DS_Store
+**/*.log
+**/.env
+**/.env.*
+README.md
